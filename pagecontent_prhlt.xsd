@@ -198,6 +198,26 @@ Range: -179.999,180</documentation>
             	<documentation>Point list with format "x1,y1 x2,y2 ..."</documentation>
             </annotation>
 		</attribute>
+		<attribute name="fpgram" use="optional" type="pc:PointsType">
+			<annotation>
+				<documentation>Features parallelogram for alignment</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="fcontour" use="optional" type="pc:PointsType">
+			<annotation>
+				<documentation>Features contour</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="slope" use="optional" type="float">
+			<annotation>
+				<documentation>Slope angle of text line</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="slant" use="optional" type="float">
+			<annotation>
+				<documentation>Slant angle of text line</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 	<complexType name="TextLineType">
 		<sequence>
@@ -220,6 +240,7 @@ Range: -179.999,180</documentation>
 			<element name="TextStyle" type="pc:TextStyleType" minOccurs="0"/>
 		</sequence>
 		<attribute name="id" type="ID" use="required"/>
+		<attribute name="orig-id" type="string"/>
 		<attribute name="primaryLanguage" type="pc:LanguageSimpleType">
 			<annotation>
 				<documentation>
@@ -242,6 +263,7 @@ Range: -179.999,180</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="comments" type="string"/>
+		<attribute name="protected" type="string"/>
 	</complexType>
 	<complexType name="WordType">
 		<sequence>
@@ -278,6 +300,7 @@ Range: -179.999,180</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="comments" type="string"/>
+		<attribute name="protected" type="string"/>
 	</complexType>
 	<complexType name="GlyphType">
 		<sequence>
@@ -308,6 +331,7 @@ Range: -179.999,180</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="comments" type="string"/>
+		<attribute name="protected" type="string"/>
 	</complexType>
 	<complexType name="TextEquivType">
 		<sequence>
@@ -333,13 +357,13 @@ Range: -179.999,180</documentation>
 			</element>
 		</sequence>
 		<attribute name="conf">
-            <annotation>
-            	<documentation>OCR confidence value (between 0 and 1)</documentation>
-            </annotation>
-            <simpleType>
+			<annotation>
+				<documentation>OCR confidence value (between 0 and 1 inclusive)</documentation>
+			</annotation>
+			<simpleType>
 				<restriction base="float">
-					<minExclusive value="0"/>
-					<maxExclusive value="1"/>
+					<minInclusive value="0"/>
+					<maxInclusive value="1"/>
 				</restriction>
 			</simpleType>
 		</attribute>
@@ -1200,7 +1224,7 @@ It does not contain pagenumber (if not part of running title), marginals, signat
         	<documentation>Point list with format "x1,y1 x2,y2 ..."</documentation>
         </annotation>
         <restriction base="string">
-    		<pattern value="([0-9]+,[0-9]+ )+([0-9]+,[0-9]+)"/>
+    		<pattern value="([-.0-9]+,[-.0-9]+ )+([-.0-9]+,[-.0-9]+)"/>
     	</restriction>
     </simpleType>
 
@@ -1359,6 +1383,7 @@ It does not contain pagenumber (if not part of running title), marginals, signat
     		</choice>
     	</sequence>
     	<attribute name="id" type="ID" use="required"/>
+    	<attribute name="orig-id" type="string"/>
     	<attribute name="custom" type="string">
     		<annotation>
     			<documentation>For generic use</documentation>
