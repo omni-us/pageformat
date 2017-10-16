@@ -8,6 +8,7 @@
   <complexType name="PcGtsType">
     <sequence>
       <element name="Metadata" type="pc:MetadataType"/>
+      <element name="Property" type="pc:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
       <element name="Page" type="pc:PageType" minOccurs="1" maxOccurs="unbounded"/>
     </sequence>
     <attribute name="pcGtsId" type="ID" use="optional"/>
@@ -72,6 +73,7 @@
     <attribute name="imageFilename" type="string" use="required"/>
     <attribute name="imageWidth" type="int" use="required"/>
     <attribute name="imageHeight" type="int" use="required"/>
+    <attribute name="orientation" type="pc:PageOrientationType" use="optional"/>
     <attribute name="custom" type="string">
       <annotation>
         <documentation>For generic use</documentation>
@@ -184,26 +186,6 @@ Range: -179.999,180</documentation>
       </annotation>
     </attribute>
     <attribute name="conf" type="pc:ConfType" use="optional"/>
-    <attribute name="fpgram" use="optional" type="pc:PointsType">
-      <annotation>
-        <documentation>Features parallelogram for alignment</documentation>
-      </annotation>
-    </attribute>
-    <attribute name="fcontour" use="optional" type="pc:PointsType">
-      <annotation>
-        <documentation>Features contour</documentation>
-      </annotation>
-    </attribute>
-    <attribute name="slope" use="optional" type="float">
-      <annotation>
-        <documentation>Slope angle of text line</documentation>
-      </annotation>
-    </attribute>
-    <attribute name="slant" use="optional" type="float">
-      <annotation>
-        <documentation>Slant angle of text line</documentation>
-      </annotation>
-    </attribute>
   </complexType>
   <complexType name="TextLineType">
     <sequence>
@@ -245,7 +227,6 @@ Range: -179.999,180</documentation>
       </annotation>
     </attribute>
     <attribute name="comments" type="string"/>
-    <attribute name="protected" type="string"/>
   </complexType>
   <complexType name="WordType">
     <sequence>
@@ -278,7 +259,6 @@ Range: -179.999,180</documentation>
       </annotation>
     </attribute>
     <attribute name="comments" type="string"/>
-    <attribute name="protected" type="string"/>
   </complexType>
   <complexType name="GlyphType">
     <sequence>
@@ -306,7 +286,6 @@ Range: -179.999,180</documentation>
       </annotation>
     </attribute>
     <attribute name="comments" type="string"/>
-    <attribute name="protected" type="string"/>
   </complexType>
   <complexType name="TextEquivType">
     <sequence>
@@ -1400,6 +1379,18 @@ It does not contain pagenumber (if not part of running title), marginals, signat
       <maxInclusive value="1"/>
     </restriction>
   </simpleType><!--ConfType-->
+
+  <!--===========================-->
+  <!-- Type for page orientation -->
+  <!--===========================-->
+  <simpleType name="PageOrientationType">
+    <annotation>
+      <documentation>The angle the page has to be rotated in clockwise direction to make the page straight (accepted values are: -90, 0, 90, 180)</documentation>
+    </annotation>
+    <restriction base="string">
+      <pattern value="-90|0|90|180"/>
+    </restriction>
+  </simpleType><!--PageOrientationType-->
 
   <!--================================-->
   <!-- Definition of the Process type -->
