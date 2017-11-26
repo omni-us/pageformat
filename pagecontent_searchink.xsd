@@ -32,6 +32,7 @@
   </complexType>
   <complexType name="PageType">
     <sequence>
+      <element name="ImageOrientation" type="pc:ImageOrientationType" minOccurs="0" maxOccurs="1"/>
       <element name="Property" type="pc:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
       <element name="AlternativeImage" type="pc:AlternativeImageType" minOccurs="0" maxOccurs="unbounded">
         <annotation>
@@ -73,7 +74,6 @@
     <attribute name="imageFilename" type="string" use="required"/>
     <attribute name="imageWidth" type="int" use="required"/>
     <attribute name="imageHeight" type="int" use="required"/>
-    <attribute name="orientation" type="pc:PageOrientationType" use="optional"/>
     <attribute name="custom" type="string">
       <annotation>
         <documentation>For generic use</documentation>
@@ -1380,17 +1380,27 @@ It does not contain pagenumber (if not part of running title), marginals, signat
     </restriction>
   </simpleType><!--ConfType-->
 
-  <!--===========================-->
-  <!-- Type for page orientation -->
-  <!--===========================-->
-  <simpleType name="PageOrientationType">
+  <!--============================-->
+  <!-- Type for image orientation -->
+  <!--============================-->
+  <complexType name="ImageOrientationType">
     <annotation>
-      <documentation>The angle the page has to be rotated in clockwise direction to make the page straight (accepted values are: -90, 0, 90, 180)</documentation>
+      <documentation>
+        The angle the image has to be rotated in clockwise direction to make the
+        page straight (accepted values are: -90, 0, 90, 180). In case the
+        orientation was the result of some automatic process, the corresponding
+        confidence value should be included.
+      </documentation>
     </annotation>
-    <restriction base="string">
-      <pattern value="-90|0|90|180"/>
-    </restriction>
-  </simpleType><!--PageOrientationType-->
+    <attribute name="angle" use="required">
+      <simpleType>
+        <restriction base="string">
+          <pattern value="(-90|0|90|180)"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="conf" type="pc:ConfType" use="optional"/>
+  </complexType><!--ImageOrientationType-->
 
   <!--================================-->
   <!-- Definition of the Process type -->
@@ -1400,7 +1410,7 @@ It does not contain pagenumber (if not part of running title), marginals, signat
       <documentation>Element for documenting processes performed on the page.</documentation>
     </annotation>
     <!-- Identifier of process -->
-    <attribute name="id" type="ID" use="required">
+    <attribute name="id" type="ID" use="optional">
       <annotation>
         <documentation>
           Short identifier of the process. For simplicity in general it could
@@ -1408,12 +1418,20 @@ It does not contain pagenumber (if not part of running title), marginals, signat
         </documentation>
       </annotation>
     </attribute>
-    <!-- Date and time the process took place -->
-    <attribute name="date" type="dateTime" use="required">
+    <!-- Date and time the process started -->
+    <attribute name="started" type="dateTime" use="required">
       <annotation>
         <documentation>
           Date and time in UTC of when the process ended using the XSD
           dateTime format, i.e., YYYY-MM-DDThh:mm:ssZ.
+        </documentation>
+      </annotation>
+    </attribute>
+    <!-- Time the process took -->
+    <attribute name="time" type="float" use="required">
+      <annotation>
+        <documentation>
+          Total time the process took in seconds.
         </documentation>
       </annotation>
     </attribute>
@@ -1432,7 +1450,7 @@ It does not contain pagenumber (if not part of running title), marginals, signat
         <documentation>
           Reference to the tool execution instance. It should allow locating
           the configuration used for executing and the output logs. Also for
-          humand edits, it should allow to determine the person.
+          human edits, it should allow to determine the person.
         </documentation>
       </annotation>
     </attribute>
