@@ -186,6 +186,7 @@ Range: -179.999,180</documentation>
       </annotation>
     </attribute>
     <attribute name="conf" type="pc:ConfType" use="optional"/>
+    <attribute name="setBy" type="pc:SetByType" use="optional"/>
   </complexType>
   <complexType name="TextLineType">
     <sequence>
@@ -311,6 +312,7 @@ Range: -179.999,180</documentation>
       </element>
     </sequence>
     <attribute name="conf" type="pc:ConfType" use="optional"/>
+    <attribute name="setBy" type="pc:SetByType" use="optional"/>
   </complexType>
   <complexType name="ImageRegionType">
     <annotation>
@@ -1136,6 +1138,7 @@ It does not contain pagenumber (if not part of running title), marginals, signat
   <complexType name="BaselineType">
     <attribute name="points" type="pc:PointsType" use="required"/>
     <attribute name="conf" type="pc:ConfType" use="optional"/>
+    <attribute name="setBy" type="pc:SetByType" use="optional"/>
   </complexType>
   <simpleType name="PointsType">
     <annotation>
@@ -1350,6 +1353,8 @@ It does not contain pagenumber (if not part of running title), marginals, signat
         </documentation>
       </annotation>
     </attribute>
+    <attribute name="conf" type="pc:ConfType" use="optional"/>
+    <attribute name="setBy" type="pc:SetByType" use="optional"/>
   </complexType>
   <simpleType name="PropertyNameType">
     <annotation>
@@ -1361,6 +1366,23 @@ It does not contain pagenumber (if not part of running title), marginals, signat
       <pattern value="[a-zA-Z0-9_.-]+"/>
     </restriction>
   </simpleType>
+
+  <!--============================-->
+  <!-- Type for set by attributes -->
+  <!--============================-->
+  <simpleType name="SetByType">
+    <annotation>
+      <documentation>
+        Confidence value associated to an automatic recognition process. For
+        manual edits it could also be used for specifying a trust level for
+        the person that made the edit. It is limited to the range zero to one,
+        both inclusive.
+      </documentation>
+    </annotation>
+    <restriction base="string">
+      <minLength value="1"/>
+    </restriction>
+  </simpleType><!--SetByType-->
 
   <!--============================-->
   <!-- Type for confidence values -->
@@ -1400,6 +1422,7 @@ It does not contain pagenumber (if not part of running title), marginals, signat
       </simpleType>
     </attribute>
     <attribute name="conf" type="pc:ConfType" use="optional"/>
+    <attribute name="setBy" type="pc:SetByType" use="optional"/>
   </complexType><!--ImageOrientationType-->
 
   <!--================================-->
