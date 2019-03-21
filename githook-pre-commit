@@ -1,0 +1,54 @@
+#!/bin/bash
+
+### Create pre-commit symlink if unset ###
+GITDIR="";
+if [ -d .git ]; then
+  GITDIR=".git";
+elif [ -f .git ]; then
+  GITDIR=$(sed -n '/^gitdir:/{ s|.*: ||; p; }' .git);
+fi
+if [ ! -d "$GITDIR" ]; then
+  echo "${0##*/}: error: unable to find git directory" 1>&2;
+  exit 1;
+fi
+if [ ! -h "$GITDIR/hooks/pre-commit" ]; then
+  if [ $(realpath --help 2>&1 | grep -c relative) != 0 ]; then
+    HOOK=$(realpath --relative-to="$GITDIR/hooks" ./githook-pre-commit);
+  else
+    HOOK=$(readlink -f ./githook-pre-commit);
+  fi
+  ln -fs "$HOOK" "$GITDIR/hooks/pre-commit";
+  echo "${0##*/}: creating git pre-commit hook symlink" 1>&2;
+  exit 1;
+fi
+
+FILES=( $(git status --porcelain | sed 's| .* | |' | grep '^[MRA]') );
+V=$(date -u +%Y.%m.%d);
+
+check_change_after_staged () {
+  [ "${2:1:1}" = "M" ] &&
+    echo "${0##*/}: error: unable to update version due to change after staged: $1" 1>&2 &&
+    exit 1;
+}
+
+n=1;
+while [ "$n" -lt "${#FILES[@]}" ]; do
+  case "${FILES[$n]}" in
+    pagecontent_omnius.xsd )
+      check_change_after_staged "${FILES[$n]}" "${FILES[$((n-1))]}";
+      echo "${0##*/}: updating schema version of ${FILES[$n]} to $V" 1>&2;
+      sed -r -i "s|(schema.omnius.com/[^/]+/)[0-9]{4}\.[0-9]{2}.[0-9]{2}\"|\1$V\"|" "${FILES[$n]}";
+      git add "${FILES[$n]}";
+      echo "${0##*/}: generating ${FILES[$n]/.xsd/.html}" 1>&2;
+      xmlstarlet tr xs3p/xs3p.xsl ${FILES[$n]} > ${FILES[$n]/.xsd/.html};
+      [ "$?" != "0" ] && exit 1;
+      git add "${FILES[$n]/.xsd/.html}";
+      echo "${0##*/}: validating ${FILES[$n]}" 1>&2;
+      xmllint --noout --dtdvalid http://www.w3.org/2001/XMLSchema.dtd ${FILES[$n]};
+      [ "$?" != "0" ] && exit 1;
+      ;;
+  esac
+  n=$((n+2));
+done
+
+exit 0;
