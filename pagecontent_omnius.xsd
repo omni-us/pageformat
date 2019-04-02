@@ -1,35 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
-  targetNamespace="https://schema.omnius.com/pagesformat/2019.03.21"
-  xmlns="https://schema.omnius.com/pagesformat/2019.03.21"
+  targetNamespace="https://schema.omnius.com/pagesformat/2019.04.02"
+  xmlns="https://schema.omnius.com/pagesformat/2019.04.02"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
   <xs:annotation>
     <xs:documentation>
       This Schema defines the omni:us Pages Format (OPF) designed for storing
-      metadata associated to one or more images of digitized documents.
+      data associated to one or more images of digitized documents.
 
       This format is designed to be very general so that it can be used for
       several purposes such as storing ground truth data or results of
       automatic recognition processes. It is also intended to store many
-      possible levels of metadata, such as layout and transcripts at region,
+      possible levels of data, such as layout and transcripts at region,
       line, word and glyph levels.
 
-      The format is highly based on the PRImA PAGE XML format for page content
-      https://github.com/PRImA-Research-Lab/PAGE-XML. The names of the XML
-      elements are mostly the same. The most notable differences are the
-      following:
+      General structure
+      =================
 
-      - It allows to include information about a whole document, not just a
-        single page, i.e., the XMLs can contain multiple Page elements.
+      An OPF XML is composed of one or more Page elements, each corresponding
+      to a page of a document. The Page elements have an imageFilename
+      attribute which links to a file to get the corresponding page image. This
+      could be a path (absolute or relative to the location of the XML) in
+      the local machine or a URL to retrieve it remotely. The file should
+      normally be an image or a PDF file. In case of multipage images or PDFs,
+      the imageFilename should end with the page number within square brackets
+      being the page number 1 based. The Page elements also have attributes for
+      the width and height of the page, which defines the scale for all
+      coordinates within this page.
 
-      - Only a subset of features from PRImA PAGE XML is defined.
+      Within each page there can be words, text lines and different kinds of
+      regions (text, table, image, separator and custom). Within table regions
+      there can be words, text lines, text regions and separator regions. Within
+      text regions there can be words and text lines. Within text lines there
+      can only be words. And finally within words there can only be glyphs. All
+      of these elements can optionally have a Coords element which defines its
+      geometry. In the case of text lines there is an additional geometry
+      element which is its baseline. The elements that relate to text, i.e.,
+      text regions, text lines, words and glyphs, can have TextEquiv elements
+      that contains its corresponding text content. A single element may have
+      more than one TextEquiv element to store for instance multiple
+      recognition hypotheses, though all of them must have a unique type
+      attribute.
 
-      - Coordinates are allowed to be floating point numbers, not just integers.
+      Most elements can have one or more property elements, though their keys
+      are required to be unique. These are intended to store generic information,
+      for example whether an element is of a given class.
 
-      - It defines Property elements which can be used for diverse generic
-        purposes.
+      As children of the root PcGts node apart from Page elements there can
+      also be Relation and Group. A Relation can be used to define any kind
+      of one to one relationship between two elements. For example in a
+      document there could be some text representing a key and some other
+      text its value, a relationship which could be encoded with a relation.
+      A Group encodes a relationship between multiple elements. For example,
+      there could be text regions for paragraphs and a group to indicate all
+      paragraphs that belong to a single column.
+
+      All elements that are a result of an automatic recognition can and
+      should have a conf attribute set indicating the confidence of this
+      recognition.
+
+      Reading order
+      -------------
+
+      The reading order of words within lines, lines within regions, pages
+      within the document, etc. is implied by the order of the elements in the
+      XML. If lines in a region do not have an explicit reading order, then
+      they shouldn't be part of the same region, for example a paragraph and a
+      side note.
+
+      Text lines
+      ----------
+
+      For the purpose of this format, a text line is defined as a series of
+      words that are next to each other without overlapping along the reading
+      direction. For latin languages this would be words from left to right
+      that are all at the same vertical position and that the next word always
+      starts more to the right than the end of the previous word. This means
+      that if in some text a word was missing and later written between two
+      lines, since there was no space for it, then this inserted word is
+      considered as a different line. If there is an insertion symbol, then
+      this symbol should be added to the corresponding line transcript where
+      it visibly appears.
+
+      Baselines
+      ---------
+
+      The order of the points in the baselines should always be left-to-right
+      for both text which is read left-to-right and right-to-left.
+
+      Coordinates
+      -----------
+
+      The Coords of elements defining its geometry in general can be any polygon
+      without restrictions. However, similar to the baselines, the order of the
+      points normally is used to encode directionality. The first point should
+      be the top-left corner and the rest be in clockwise order. The top-left is
+      with respect to the actual orientation of the respective content, not the
+      orientation of the page. For example, a text line which is vertical in the
+      page, reading from bottom to top, its top-left would be the point closest
+      to the bottom-left of the page.
+
+      Additional non-schema requirements and recommendations
+      ======================================================
 
       To prevent development errors and ease debugging of problems, a few
       requirements and recommendations described next should be followed.
@@ -48,34 +122,35 @@
       - When pretty printing the XML, it should be indented using 2 spaces and
         elements without content should always be self-closed.
 
-      Reading order
-      -------------
+      Relation to PRImA PAGE XML
+      ==========================
 
-      The reading order of words within lines, lines within regions, pages
-      within the document, etc. is implied by the order of the elements in the
-      XML. If lines in a region do not have an explicit reading order, then
-      they shouldn't be part of the same region, for example a paragraph and a
-      side note.
+      The format is highly based on the
+      [PRImA PAGE XML format](https://github.com/PRImA-Research-Lab/PAGE-XML)
+      for page content. The names of the XML elements are mostly the same. The
+      most notable differences are the following:
 
-      Text lines
-      ----------
+      - It allows to include information about a whole document, not just a
+        single page, i.e., the XMLs can contain multiple Page elements.
 
-      For the purpose of this format, a Line is defined as a series of words
-      that are next to each other without overlapping along the reading
-      direction. For latin languages this would be words from left to right
-      that are all at the same vertical position and that the next word always
-      starts more to the right than the end of the previous word. This means
-      that if in some text a word was missing and later written between two
-      lines, since there was no space for it, then this inserted word is
-      considered as a different line. If there is an insertion symbol, then
-      this symbol should be added to the corresponding line transcript where
-      it visibly appears.
+      - Only a subset of features from PRImA PAGE XML is allowed.
 
-      Baselines
-      ---------
+      - Coordinates are allowed to be floating point numbers, not just integers.
 
-      The order of the points in the baselines should always be in the
-      reading direction of the text.
+      - It defines Property elements which can be used for diverse generic
+        purposes.
+
+      - TextLines are allowed as children of Page and TableRegion elements, words
+        are allowed as children of Page, TextRegion and TableRegion elements, and
+        TextRegions can also be children of TableRegions.
+
+      - Relations are stored as children of the PcGts root node instead of Page.
+
+      - There is a generic Group element also stored as children of the PcGts
+        root node which references one or more IDs which can relate to any
+        element type.
+
+      - Page elements optionally can have an ID attribute.
     </xs:documentation>
   </xs:annotation>
 
@@ -176,7 +251,16 @@
       </xs:choice>
     </xs:sequence>
     <xs:attribute name="id"            type="xs:ID"        use="optional"/>
-    <xs:attribute name="imageFilename" type="NotEmptyType" use="required"/>
+    <xs:attribute name="imageFilename" type="NotEmptyType" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          A path in the local machine absolute or relative to the location
+          of the XML, or a URL from where to get the file. If the file corresponds
+          to a multipage image or PDF, then the path/URL must be followed by the
+          page number (1 based) within square brackets. For example `file.pdf[1]`.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="imageWidth"    type="xs:int"       use="required"/>
     <xs:attribute name="imageHeight"   type="xs:int"       use="required"/>
   </xs:complexType>
@@ -393,6 +477,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
+      <xs:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Unicode" type="xs:string">
         <xs:annotation>
           <xs:documentation>
