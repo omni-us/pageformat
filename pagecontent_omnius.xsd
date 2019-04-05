@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
-  targetNamespace="https://schema.omnius.com/pagesformat/2019.04.02"
-  xmlns="https://schema.omnius.com/pagesformat/2019.04.02"
+  targetNamespace="https://schema.omnius.com/pagesformat/2019.04.05"
+  xmlns="https://schema.omnius.com/pagesformat/2019.04.05"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
@@ -49,13 +49,11 @@
       for example whether an element is of a given class.
 
       As children of the root PcGts node apart from Page elements there can
-      also be Relation and Group. A Relation can be used to define any kind
-      of one to one relationship between two elements. For example in a
-      document there could be some text representing a key and some other
-      text its value, a relationship which could be encoded with a relation.
-      A Group encodes a relationship between multiple elements. For example,
-      there could be text regions for paragraphs and a group to indicate all
-      paragraphs that belong to a single column.
+      also be Groups. A Group encodes a relationship between multiple elements.
+      For example, there could be text regions for paragraphs and a group to
+      indicate all paragraphs that belong to a single column. Another example
+      could be that in a document there is some text representing a key and some
+      other text its value, a relationship which could be encoded with a Group.
 
       All elements that are a result of an automatic recognition can and
       should have a conf attribute set indicating the confidence of this
@@ -144,10 +142,8 @@
         are allowed as children of Page, TextRegion and TableRegion elements, and
         TextRegions can also be children of TableRegions.
 
-      - Relations are stored as children of the PcGts root node instead of Page.
-
-      - There is a generic Group element also stored as children of the PcGts
-        root node which references one or more IDs which can relate to any
+      - There is a generic Group element stored as children of the PcGts
+        root node which references one or more IDs that can reference any
         element type.
 
       - Page elements optionally can have an ID attribute.
@@ -166,7 +162,6 @@
         <xs:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="Page"     type="PageType"     minOccurs="1" maxOccurs="unbounded"/>
         <xs:element name="Group"    type="GroupType"    minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="Relation" type="RelationType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -280,23 +275,10 @@
     <xs:attribute name="id"    type="xs:ID"        use="required"/>
   </xs:complexType>
 
-  <xs:complexType name="RelationType">
-    <xs:annotation>
-      <xs:documentation>
-        One-to-one relation between two elements.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="Property"  type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="Member"    type="MemberType"   minOccurs="2" maxOccurs="2"/>
-    </xs:sequence>
-    <xs:attribute name="id" type="xs:ID" use="required"/>
-  </xs:complexType>
-
   <xs:complexType name="MemberType">
     <xs:annotation>
       <xs:documentation>
-        Element for specifying a member of a group or a relation.
+        Element for specifying a member of a group.
       </xs:documentation>
     </xs:annotation>
     <xs:attribute name="ref" type="xs:IDREF" use="required">
@@ -478,13 +460,12 @@
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="Unicode" type="xs:string">
+      <xs:element name="Unicode" type="NotEmptyType">
         <xs:annotation>
           <xs:documentation>
-            Correct encoding of the original, always using
-            the corresponding Unicode code point. I.e.
-            ligatures have to be represented as one
-            character etc.
+            Corresponding text in Unicode. If present, it not allowed to be an
+            empty string. If there is a need for empty text, then a special symbol
+            should be used, e.g. "&lt;empty/&gt;".
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -492,7 +473,7 @@
     <xs:attribute name="type"  type="NotEmptyType" use="optional">
       <xs:annotation>
         <xs:documentation>
-          The type of text used to differentiate between multiple in the same
+          The type of text, used to differentiate between multiple in the same
           element. For example, for n-best recognitions the type could be set
           as 'best1', 'best2', etc.
         </xs:documentation>
