@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
-  targetNamespace="https://schema.omnius.com/pagesformat/2019.04.05"
-  xmlns="https://schema.omnius.com/pagesformat/2019.04.05"
+  targetNamespace="https://schema.omnius.com/pagesformat/2019.04.11"
+  xmlns="https://schema.omnius.com/pagesformat/2019.04.11"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
@@ -233,8 +233,8 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="Property"         type="PropertyType"         minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ImageOrientation" type="ImageOrientationType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Property"         type="PropertyType"         minOccurs="0" maxOccurs="unbounded"/>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="Word"            type="WordType"/>
         <xs:element name="TextLine"        type="TextLineType"/>
