@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
-  targetNamespace="https://schema.omnius.com/pagesformat/2019.04.11"
-  xmlns="https://schema.omnius.com/pagesformat/2019.04.11"
+  targetNamespace="https://schema.omnius.com/pagesformat/2019.07.03"
+  xmlns="https://schema.omnius.com/pagesformat/2019.07.03"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
@@ -281,7 +281,8 @@
         Element for specifying a member of a group.
       </xs:documentation>
     </xs:annotation>
-    <xs:attribute name="ref" type="xs:IDREF" use="required">
+    <xs:attribute name="conf" type="ConfType" use="optional"/>
+    <xs:attribute name="ref"  type="xs:IDREF" use="required">
       <xs:annotation>
         <xs:documentation>
           ID of the element that is member.
