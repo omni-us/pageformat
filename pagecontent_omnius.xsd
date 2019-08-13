@@ -26,9 +26,9 @@
       the local machine or a URL to retrieve it remotely. The file should
       normally be an image or a PDF file. In case of multipage images or PDFs,
       the imageFilename should end with the page number within square brackets
-      being the page number 1 based. The Page elements also have attributes for
-      the width and height of the page, which defines the scale for all
-      coordinates within this page.
+      being the page number 0 based (ImageMagick notation). The Page elements
+      also have attributes for the width and height of the page, which defines
+      the scale for all coordinates within this page.
 
       Within each page there can be words, text lines and different kinds of
       regions (text, table, image, separator and custom). Within table regions
@@ -133,6 +133,9 @@
 
       - Only a subset of features from PRImA PAGE XML is allowed.
 
+      - Since many region types have been removed, as alternative there is a new
+        CustomRegion with a type attribute.
+
       - Coordinates are allowed to be floating point numbers, not just integers.
 
       - It defines Property elements which can be used for diverse generic
@@ -147,6 +150,11 @@
         element type.
 
       - Page elements optionally can have an ID attribute.
+
+      - Most elements allow a setBy attribute to identify who/what created it.
+
+      - Process elements can be added to the Metadata to document details of
+        processes run on the document.
     </xs:documentation>
   </xs:annotation>
 
