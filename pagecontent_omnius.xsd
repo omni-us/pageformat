@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
-  targetNamespace="https://schema.omnius.com/pagesformat/2019.07.03"
-  xmlns="https://schema.omnius.com/pagesformat/2019.07.03"
+  targetNamespace="https://schema.omnius.com/pagesformat/2020.02.04"
+  xmlns="https://schema.omnius.com/pagesformat/2020.02.04"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
@@ -171,6 +171,7 @@
         <xs:element name="Page"     type="PageType"     minOccurs="1" maxOccurs="unbounded"/>
         <xs:element name="Group"    type="GroupType"    minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
+      <xs:attribute name="id"       type="xs:ID"        use="optional"/>
     </xs:complexType>
   </xs:element>
 
