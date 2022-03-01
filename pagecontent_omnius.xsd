@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
-  targetNamespace="https://schema.omnius.com/pagesformat/2020.02.04"
-  xmlns="https://schema.omnius.com/pagesformat/2020.02.04"
+  targetNamespace="https://schema.omnius.com/pagesformat/2022.03.01"
+  xmlns="https://schema.omnius.com/pagesformat/2022.03.01"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
   <xs:annotation>
     <xs:documentation>
-      This Schema defines the omni:us Pages Format (OPF) designed for storing
+      This Schema defines the omni:us Pages Format (OPF), intended for storing
       data associated to one or more images of digitized documents.
 
       This format is designed to be very general so that it can be used for
-      several purposes such as storing ground truth data or results of
+      several purposes, such as storing ground truth data or results of
       automatic recognition processes. It is also intended to store many
       possible levels of data, such as layout and transcripts at region,
       line, word and glyph levels.
@@ -19,16 +19,16 @@
       General structure
       =================
 
-      An OPF XML is composed of one or more Page elements, each corresponding
-      to a page of a document. The Page elements have an imageFilename
-      attribute which links to a file to get the corresponding page image. This
-      could be a path (absolute or relative to the location of the XML) in
-      the local machine or a URL to retrieve it remotely. The file should
-      normally be an image or a PDF file. In case of multipage images or PDFs,
-      the imageFilename should end with the page number within square brackets
-      being the page number 0 based (ImageMagick notation). The Page elements
-      also have attributes for the width and height of the page, which defines
-      the scale for all coordinates within this page.
+      An OPF XML is composed of one or more Page elements, each corresponding to
+      a page of a document. The Page elements have an imageFilename attribute
+      which links to a file from where to get the corresponding page image. This
+      could be a path (absolute or relative to the location of the XML) in the
+      local machine or a URL to retrieve it remotely. The file should normally
+      be an image or a PDF file. In case of multipage images or PDFs, the
+      imageFilename should end with the page number within square brackets being
+      the page number 0 based (ImageMagick notation). The Page elements also
+      have attributes for the width and height of the page, which defines the
+      scale for all coordinates within this page.
 
       Within each page there can be words, text lines and different kinds of
       regions (text, table, image, separator and custom). Within table regions
@@ -36,7 +36,7 @@
       text regions there can be words and text lines. Within text lines there
       can only be words. And finally within words there can only be glyphs. All
       of these elements can optionally have a Coords element which defines its
-      geometry. In the case of text lines there is an additional geometry
+      geometry. In the case of text lines, there is an additional geometry
       element which is its baseline. The elements that relate to text, i.e.,
       text regions, text lines, words and glyphs, can have TextEquiv elements
       that contains its corresponding text content. A single element may have
@@ -55,9 +55,8 @@
       could be that in a document there is some text representing a key and some
       other text its value, a relationship which could be encoded with a Group.
 
-      All elements that are a result of an automatic recognition can and
-      should have a conf attribute set indicating the confidence of this
-      recognition.
+      All elements that are a result of an automatic recognition can and should
+      have a conf attribute indicating the confidence of this recognition.
 
       Reading order
       -------------
@@ -191,7 +190,7 @@
 
   <xs:complexType name="ProcessType">
     <xs:annotation>
-      <xs:documentation>Element for documenting processes performed on the document.</xs:documentation>
+      <xs:documentation>Element for information of a process performed on the document.</xs:documentation>
     </xs:annotation>
     <xs:attribute name="id" type="xs:ID" use="optional">
       <xs:annotation>
@@ -204,7 +203,7 @@
     <xs:attribute name="started" type="xs:dateTime" use="required">
       <xs:annotation>
         <xs:documentation>
-          Date and time in UTC of when the process ended using the XSD
+          Date and time in UTC of when the process started using the XSD
           dateTime format, i.e., YYYY-MM-DDThh:mm:ssZ.
         </xs:documentation>
       </xs:annotation>
@@ -220,16 +219,15 @@
       <xs:annotation>
         <xs:documentation>
           Name of the tool used to process, its version, platform it was run
-          on, etc.
+          on, configuration values, etc.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="ref" type="NotEmptyType" use="optional">
       <xs:annotation>
         <xs:documentation>
-          Reference to the tool execution instance. It should allow locating
-          the configuration used for executing and the output logs. Also for
-          human edits, it should allow to determine the person.
+          Reference to the tool execution instance. It should allow locating the
+          output logs. For human edits, it should allow to determine the person.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -261,7 +259,7 @@
           A path in the local machine absolute or relative to the location
           of the XML, or a URL from where to get the file. If the file corresponds
           to a multipage image or PDF, then the path/URL must be followed by the
-          page number (1 based) within square brackets. For example `file.pdf[1]`.
+          page number (0 based) within square brackets. For example `file.pdf[0]`.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -473,7 +471,7 @@
       <xs:element name="Unicode" type="NotEmptyType">
         <xs:annotation>
           <xs:documentation>
-            Corresponding text in Unicode. If present, it not allowed to be an
+            Corresponding text in Unicode. If present, it is not allowed to be an
             empty string. If there is a need for empty text, then a special symbol
             should be used, e.g. "&lt;empty/&gt;".
           </xs:documentation>
